@@ -8,7 +8,8 @@ export interface Book {
   totalCopies: number;
   availableCopies: number;
   ownerName: string;
-  ownerEmail: string;
+  // Only returned to the owner, never on public endpoints.
+  ownerEmail?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,5 +1,6 @@
 
 import { Suspense } from "react";
+import Link from "next/link";
 import { getAllBooks } from "@/lib/books-api";
 import BookCard from "@/components/books/BookCard";
 
@@ -10,18 +11,52 @@ export const metadata: Metadata = {
   description: "Explore all available books in BookNook.",
 };
 
-async function BooksContent() {
-  const books = await getAllBooks();
+type BooksSearchParams = Promise<{
+  category?: string | string[];
+}>;
+
+async function BooksContent({
+  searchParams,
+}: {
+  searchParams: BooksSearchParams;
+}) {
+  const { category: rawCategory } = await searchParams;
+
+  // The API rejects categories longer than 50 characters.
+  const category = (
+    Array.isArray(rawCategory) ? rawCategory[0] : rawCategory
+  )
+    ?.trim()
+    .slice(0, 50);
+
+  const books = await getAllBooks(category);
+
+  const categoryLabel =
+    books[0]?.category ?? category?.replace(/-/g, " ");
 
   return (
     <>
-      <p className="mb-6 text-sm text-gray-500">
-        Showing {books.length} books
-      </p>
+      <div className="mb-6 flex items-center justify-between gap-4 text-sm text-gray-500">
+        <p>
+          Showing {books.length} books
+          {category ? ` in ${categoryLabel}` : ""}
+        </p>
+
+        {category && (
+          <Link
+            href="/books"
+            className="font-semibold text-[#244B3C] hover:underline"
+          >
+            View all books
+          </Link>
+        )}
+      </div>
 
       {books.length === 0 ? (
         <p className="py-16 text-center text-gray-500">
-          No books available right now.
+          {category
+            ? `No books found in ${categoryLabel}.`
+            : "No books available right now."}
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
@@ -47,7 +82,11 @@ function BooksLoading() {
   );
 }
 
-export default function BooksPage() {
+export default function BooksPage({
+  searchParams,
+}: {
+  searchParams: BooksSearchParams;
+}) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-10">
@@ -65,7 +104,7 @@ export default function BooksPage() {
       </div>
 
       <Suspense fallback={<BooksLoading />}>
-        <BooksContent />
+        <BooksContent searchParams={searchParams} />
       </Suspense>
     </main>
   );

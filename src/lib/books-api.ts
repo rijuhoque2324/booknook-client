@@ -17,13 +17,19 @@ const CLIENT_API_URL = (
   process.env.NEXT_PUBLIC_API_URL || ""
 ).replace(/\/+$/, "");
 
-// GET all books
-export async function getAllBooks(): Promise<Book[]> {
+// GET all books, optionally filtered by category
+export async function getAllBooks(
+  category?: string
+): Promise<Book[]> {
   if (!API_URL) {
     throw new Error("API_URL is not configured");
   }
 
-  const response = await fetch(`${API_URL}/books`, {
+  const query = category
+    ? `?category=${encodeURIComponent(category)}`
+    : "";
+
+  const response = await fetch(`${API_URL}/books${query}`, {
     cache: "no-store",
   });
 

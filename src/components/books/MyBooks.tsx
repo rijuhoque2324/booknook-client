@@ -47,8 +47,18 @@ export default function MyBooks({ userEmail }: MyBooksProps) {
     try {
       setLoading(true);
 
-      const response = await fetch(`${API_URL}/books`, {
+      // Get JWT token from Better Auth
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error("Authentication token is missing.");
+      }
+
+      const response = await fetch(`${API_URL}/books/mine`, {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
       });
 
       if (!response.ok) {
@@ -57,17 +67,7 @@ export default function MyBooks({ userEmail }: MyBooksProps) {
 
       const result = await response.json();
 
-      // Supports either { data: [...] } or { books: [...] }
-      const allBooks: Book[] = Array.isArray(result)
-        ? result
-        : result.data ?? result.books ?? [];
-
-      const myBooks = allBooks.filter(
-        (book) =>
-          book.ownerEmail?.toLowerCase() === userEmail.toLowerCase()
-      );
-
-      setBooks(myBooks);
+      setBooks(result.data ?? []);
     } catch (error) {
       console.error(error);
       toast.error("Unable to load your books.");
