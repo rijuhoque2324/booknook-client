@@ -128,7 +128,7 @@ export default function Navbar() {
             </p>
 
             <p className="mt-2 text-xs font-semibold text-[#244B3C]">
-              View Profile →
+              My Profile →
             </p>
           </Link>
 

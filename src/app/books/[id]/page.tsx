@@ -14,6 +14,7 @@ interface BookDetailsPageProps {
   }>;
 }
 
+
 async function BookDetailsContent({
   params,
 }: BookDetailsPageProps) {
@@ -103,6 +104,7 @@ async function BookDetailsContent({
             bookId={book._id}
             bookTitle={book.title}
             availableCopies={book.availableCopies}
+            alreadyBorrowed={false}
           />
         </div>
       </div>

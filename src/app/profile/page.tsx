@@ -2,6 +2,13 @@
 import { requireAuth } from "@/lib/auth-guard";
 import { UserCircle, Mail, CalendarDays } from "lucide-react";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "View your BookNook account information.",
+};
+
 export default async function ProfilePage() {
   const session = await requireAuth();
   const user = session.user;

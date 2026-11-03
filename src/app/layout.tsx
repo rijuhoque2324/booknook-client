@@ -6,6 +6,16 @@ import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
 import ToastProvider from "@/components/providers/ToastProvider";
 
+
+export const metadata: Metadata = {
+  title: {
+    default: "BookNook | Online Library",
+    template: "BookNook | %s",
+  },
+  description:
+    "Explore books, discover new authors, and borrow your favorite books with BookNook.",
+};
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
@@ -18,12 +28,6 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "BookNook | Your Digital Library",
-  description:
-    "Discover, explore, borrow and enjoy books with BookNook.",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,10 +35,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${playfair.variable} ${dmSans.variable} antialiased`}
-      >
-        <MainLayout>
+      <body className={`${playfair.variable} ${dmSans.variable} antialiased`}>
+        <MainLayout>          
           {children}
         </MainLayout>
         <ToastProvider/>

@@ -69,23 +69,26 @@ export async function getBookById(
 }
 
 // POST create book
+interface CreateBookPayload {
+  title: string;
+  author: string;
+  category: string;
+  description: string;
+  image: string;
+  totalCopies: number;
+}
+
+
 export async function createBook(
-  bookData: {
-    title: string;
-    author: string;
-    category: string;
-    description: string;
-    image: string;
-    totalCopies: number;
-  },
+  bookData: CreateBookPayload,
   accessToken: string
 ) {
   if (!CLIENT_API_URL) {
-    throw new Error("NEXT_PUBLIC_API_URL is not configured");
+    throw new Error("API URL is not configured.");
   }
 
   if (!accessToken) {
-    throw new Error("Authentication token is required");
+    throw new Error("Authentication token is required.");
   }
 
   const response = await fetch(`${CLIENT_API_URL}/books`, {
@@ -97,29 +100,26 @@ export async function createBook(
     body: JSON.stringify(bookData),
   });
 
-  const responseText = await response.text();
+  const result = await response.json().catch(() => null);
 
-  let result;
-
-  try {
-    result = responseText ? JSON.parse(responseText) : {};
-  } catch {
-    console.error("Backend returned non-JSON response:", responseText);
-    throw new Error(`Server error: HTTP ${response.status}`);
-  }
-
-  console.log("CREATE BOOK BACKEND RESPONSE:", {
+  console.log("CREATE BOOK RESPONSE:", {
     status: response.status,
-    ok: response.ok,
-    body: result,
+    result,
   });
 
   if (!response.ok) {
+    const validationErrors = result?.errors
+      ?.map(
+        (error: { field?: string; message?: string }) =>
+          `${error.field || "Field"}: ${error.message || "Invalid value"}`
+      )
+      .join("\n");
+
     throw new Error(
-      result.message ||
-      result.error ||
-      JSON.stringify(result) ||
-      `Failed to create book (${response.status})`
+      validationErrors ||
+        result?.message ||
+        result?.error ||
+        `Failed to create book. Status: ${response.status}`
     );
   }
 

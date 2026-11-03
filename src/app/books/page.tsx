@@ -3,6 +3,13 @@ import { Suspense } from "react";
 import { getAllBooks } from "@/lib/books-api";
 import BookCard from "@/components/books/BookCard";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "All Books",
+  description: "Explore all available books in BookNook.",
+};
+
 async function BooksContent() {
   const books = await getAllBooks();
 

@@ -1,6 +1,13 @@
-
 import AddBookForm from "@/components/books/AddBookForm";
 import { requireAuth } from "@/lib/auth-guard";
+
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Add Book",
+  description: "Add a new book to your library collection.",
+};
 
 export const instant = false;
 

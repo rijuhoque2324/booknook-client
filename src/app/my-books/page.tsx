@@ -1,6 +1,14 @@
 import { requireAuth } from "@/lib/auth-guard";
 import MyBooks from "@/components/books/MyBooks";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Books",
+  description: "Manage the books you have added to your library collection.",
+};
+export const instant = false;
+
 export default async function MyBooksPage() {
   const session = await requireAuth();
 
