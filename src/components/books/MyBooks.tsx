@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { Pencil, Trash2, BookOpen, X } from "lucide-react";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 interface Book {
   _id: string;
@@ -131,39 +132,57 @@ export default function MyBooks({ userEmail }: MyBooksProps) {
     }
   };
 
-  // Delete book
-  const handleDelete = async (bookId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this book?"
+
+// Delete book
+const handleDelete = async (bookId: string) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this book?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDeletingId(bookId);
+
+    // Get JWT token from Better Auth
+    const { data, error } = await authClient.token();
+
+    if (error || !data?.token) {
+      throw new Error("Authentication required. Please login again.");
+    }
+
+    // Send DELETE request with JWT token
+    const response = await fetch(`${API_URL}/books/${bookId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to delete book.");
+    }
+
+    toast.success("Book deleted successfully!");
+
+    setBooks((previousBooks) =>
+      previousBooks.filter((book) => book._id !== bookId)
     );
 
-    if (!confirmed) return;
+  } catch (error) {
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong."
+    );
+  } finally {
+    setDeletingId(null);
+  }
+};
 
-    try {
-      setDeletingId(bookId);
-
-      const response = await fetch(`${API_URL}/books/${bookId}`, {
-        method: "DELETE",
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to delete book.");
-      }
-
-      toast.success("Book deleted successfully!");
-      setBooks((previousBooks) =>
-        previousBooks.filter((book) => book._id !== bookId)
-      );
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Something went wrong."
-      );
-    } finally {
-      setDeletingId(null);
-    }
-  };
 
   if (loading) {
     return (
