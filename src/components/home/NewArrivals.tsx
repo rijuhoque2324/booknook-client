@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { getAllBooks } from "@/lib/books-api";
 import BookCard from "@/components/books/BookCard";
 
-export default async function NewArrivals() {
+async function NewArrivalsContent() {
   const books = await getAllBooks();
-
   const latestBooks = books.slice(0, 6);
 
   return (
@@ -39,5 +39,34 @@ export default async function NewArrivals() {
         </div>
       )}
     </section>
+  );
+}
+
+function NewArrivalsSkeleton() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-16">
+      <div className="mb-8">
+        <div className="h-4 w-44 animate-pulse rounded bg-gray-200" />
+        <div className="mt-3 h-9 w-52 animate-pulse rounded bg-gray-200" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="animate-pulse">
+            <div className="aspect-[3/4] rounded-xl bg-gray-200" />
+            <div className="mt-3 h-4 w-3/4 rounded bg-gray-200" />
+            <div className="mt-2 h-3 w-1/2 rounded bg-gray-200" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function NewArrivals() {
+  return (
+    <Suspense fallback={<NewArrivalsSkeleton />}>
+      <NewArrivalsContent />
+    </Suspense>
   );
 }

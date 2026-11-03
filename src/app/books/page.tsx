@@ -1,9 +1,46 @@
+
+import { Suspense } from "react";
 import { getAllBooks } from "@/lib/books-api";
 import BookCard from "@/components/books/BookCard";
 
-export default async function BooksPage() {
+async function BooksContent() {
   const books = await getAllBooks();
 
+  return (
+    <>
+      <p className="mb-6 text-sm text-gray-500">
+        Showing {books.length} books
+      </p>
+
+      {books.length === 0 ? (
+        <p className="py-16 text-center text-gray-500">
+          No books available right now.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {books.map((book) => (
+            <BookCard key={book._id} book={book} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+function BooksLoading() {
+  return (
+    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-72 animate-pulse rounded-xl bg-gray-100"
+        />
+      ))}
+    </div>
+  );
+}
+
+export default function BooksPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-10">
@@ -20,21 +57,9 @@ export default async function BooksPage() {
         </p>
       </div>
 
-      <p className="mb-6 text-sm text-gray-500">
-        Showing {books.length} books
-      </p>
-
-      {books.length === 0 ? (
-        <p className="py-16 text-center text-gray-500">
-          No books available right now.
-        </p>
-      ) : (
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-          {books.map((book) => (
-            <BookCard key={book._id} book={book} />
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<BooksLoading />}>
+        <BooksContent />
+      </Suspense>
     </main>
   );
 }

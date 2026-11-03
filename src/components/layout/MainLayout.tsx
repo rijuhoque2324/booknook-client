@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -11,7 +12,13 @@ export default function MainLayout({
 }: MainLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      <Suspense
+        fallback={
+          <div className="h-20 w-full animate-pulse bg-white" />
+        }
+      >
+        <Navbar />
+      </Suspense>
 
       <main className="flex-1">
         {children}

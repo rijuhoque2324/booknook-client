@@ -1,3 +1,5 @@
+
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,7 +12,7 @@ interface BookDetailsPageProps {
   }>;
 }
 
-export default async function BookDetailsPage({
+async function BookDetailsContent({
   params,
 }: BookDetailsPageProps) {
   const { id } = await params;
@@ -48,6 +50,7 @@ export default async function BookDetailsPage({
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
             priority
+            unoptimized={book.image.includes("placehold.co")}
           />
         </div>
 
@@ -98,5 +101,34 @@ export default async function BookDetailsPage({
         </div>
       </div>
     </main>
+  );
+}
+
+function BookDetailsLoading() {
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-12">
+      <div className="grid animate-pulse gap-10 md:grid-cols-2">
+        <div className="aspect-[3/4] w-full max-w-md rounded-2xl bg-gray-100" />
+
+        <div className="flex flex-col justify-center gap-5">
+          <div className="h-4 w-32 rounded bg-gray-200" />
+          <div className="h-10 w-3/4 rounded bg-gray-200" />
+          <div className="h-5 w-1/2 rounded bg-gray-200" />
+          <div className="h-24 rounded bg-gray-100" />
+          <div className="h-32 rounded bg-gray-100" />
+          <div className="h-12 rounded bg-gray-200" />
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export default function BookDetailsPage({
+  params,
+}: BookDetailsPageProps) {
+  return (
+    <Suspense fallback={<BookDetailsLoading />}>
+      <BookDetailsContent params={params} />
+    </Suspense>
   );
 }
