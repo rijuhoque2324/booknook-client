@@ -1,5 +1,5 @@
 import PageLoader from "@/components/shared/PageLoader";
 
 export default function Loading() {
-  return <PageLoader message="Loading BookNook...." />;
+  return <PageLoader message="Loading BookNook..." />;
 }
