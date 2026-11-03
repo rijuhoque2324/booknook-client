@@ -177,7 +177,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
@@ -187,7 +187,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading || Boolean(socialLoading)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#172D25] px-5 py-3.5 font-semibold text-white transition hover:bg-[#254638] disabled:cursor-not-allowed disabled:opacity-60"
+                className="cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl bg-[#172D25] px-5 py-3.5 font-semibold text-white transition hover:bg-[#254638] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isLoading ? (
                   "Signing in..."
@@ -205,7 +205,7 @@ export default function LoginPage() {
               Don't have an account?{" "}
               <Link
                 href="/register"
-                className="font-semibold text-[#172D25] hover:underline"
+                className="cursor-pointer font-semibold text-[#172D25] hover:underline"
               >
                 Create an account
               </Link>

@@ -29,7 +29,7 @@ const SocialLogin = ({
           type="button"
           disabled={isLoading || Boolean(socialLoading)}
           onClick={() => handleSocialLogin("google")}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
         >
           <span className="text-xl font-bold text-[#4285F4]">G</span>
           {socialLoading === "google"
@@ -41,7 +41,7 @@ const SocialLogin = ({
           type="button"
           disabled={isLoading || Boolean(socialLoading)}
           onClick={() => handleSocialLogin("github")}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
         >
           <GitBranch size={21} />
           {socialLoading === "github"

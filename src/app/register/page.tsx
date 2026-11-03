@@ -220,7 +220,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
                 >
                   {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                 </button>
@@ -255,7 +255,7 @@ export default function RegisterPage() {
                   aria-label={
                     showConfirmPassword ? "Hide password" : "Show password"
                   }
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
                 >
                   {showConfirmPassword ? (
                     <EyeOff size={19} />
@@ -270,7 +270,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading || Boolean(socialLoading)}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#244B3C] px-6 py-3.5 font-semibold text-white transition hover:bg-[#19392E] disabled:cursor-not-allowed disabled:opacity-60"
+              className="cursor-pointer flex w-full items-center justify-center gap-2 rounded-full bg-[#244B3C] px-6 py-3.5 font-semibold text-white transition hover:bg-[#19392E] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? "Creating Account..." : "Create Account"}
               {!isLoading && <UserPlus size={18} />}
@@ -290,7 +290,7 @@ export default function RegisterPage() {
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-bold text-[#244B3C] hover:underline"
+              className="cursor-pointer font-bold text-[#244B3C] hover:underline"
             >
               Login
             </Link>
