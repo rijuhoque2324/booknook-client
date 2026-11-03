@@ -4,14 +4,18 @@ import type {
   BookResponse,
 } from "@/types/book";
 
+// Server-side API URL
 const API_URL = process.env.API_URL;
 
-if (!API_URL) {
-  throw new Error("API_URL is not configured");
-}
+// Client-side API URL
+const CLIENT_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET all books
 export async function getAllBooks(): Promise<Book[]> {
+  if (!API_URL) {
+    throw new Error("API_URL is not configured");
+  }
+
   const response = await fetch(`${API_URL}/books`, {
     cache: "no-store",
   });
@@ -29,6 +33,10 @@ export async function getAllBooks(): Promise<Book[]> {
 export async function getBookById(
   id: string
 ): Promise<Book> {
+  if (!API_URL) {
+    throw new Error("API_URL is not configured");
+  }
+
   const response = await fetch(
     `${API_URL}/books/${encodeURIComponent(id)}`,
     {
@@ -47,4 +55,34 @@ export async function getBookById(
   const result: BookResponse = await response.json();
 
   return result.data;
+}
+
+// POST create book
+export async function createBook(bookData: {
+  title: string;
+  author: string;
+  category: string;
+  description: string;
+  image: string;
+  totalCopies: number;
+}) {
+  if (!CLIENT_API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not configured");
+  }
+
+  const response = await fetch(`${CLIENT_API_URL}/books`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(bookData),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to create book");
+  }
+
+  return result;
 }

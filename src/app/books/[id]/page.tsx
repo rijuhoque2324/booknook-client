@@ -70,13 +70,6 @@ export default async function BookDetailsPage({
 
           <div className="mt-8 space-y-4 border-t border-gray-200 pt-6">
             <div className="flex justify-between">
-              <span className="text-gray-500">Price</span>
-              <span className="font-semibold">
-                ৳{book.price}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
               <span className="text-gray-500">Total Copies</span>
               <span>{book.totalCopies}</span>
             </div>

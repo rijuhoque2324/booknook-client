@@ -34,10 +34,6 @@ export default function BookCard({ book }: BookCardProps) {
           </p>
 
           <div className="flex items-center justify-between pt-2 text-sm">
-            <span className="font-semibold text-[#244B3C]">
-              ৳{book.price}
-            </span>
-
             <span className="text-gray-500">
               {book.availableCopies > 0
                 ? `${book.availableCopies} Available`

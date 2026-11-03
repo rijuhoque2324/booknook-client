@@ -5,7 +5,6 @@ export interface Book {
   category: string;
   description: string;
   image: string;
-  price: number;
   totalCopies: number;
   availableCopies: number;
   ownerName: string;
