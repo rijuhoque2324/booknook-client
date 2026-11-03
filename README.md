@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 BookNook — Online Library Management System
 
-## Getting Started
+BookNook is a modern, community-driven online library management platform built with Next.js. It allows users to explore books, contribute books to the library, borrow available books, and manage their borrowing activities through a simple and user-friendly interface.
 
-First, run the development server:
+## 🌟 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Explore Books:** Browse and discover books from the community library.
+- **User Authentication:** Secure registration and login using Better Auth.
+- **Add Books:** Authenticated users can contribute new books to the library.
+- **My Books:** Manage books added by the logged-in user.
+- **Edit & Delete Books:** Book owners can update or remove their own books.
+- **Borrow Books:** Borrow books with available copies.
+- **My Borrows:** View and manage personal borrowing records.
+- **Return Books:** Return previously borrowed books.
+- **Responsive Design:** Optimized for desktop, tablet, and mobile devices.
+- **Toast Notifications:** Clear success and error feedback using React Toastify.
+- **Protected Routes:** Restricts private pages to authenticated users.
+- **Dynamic Page Metadata:** Provides page-specific titles and descriptions.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Technology | Purpose |
+|---|---|
+| Next.js | React framework |
+| React | UI development |
+| TypeScript | Type safety |
+| Tailwind CSS | Styling |
+| Better Auth | Authentication |
+| React Toastify | Notifications |
+| Lucide React | Icons |
+| Swiper.js | Home page slider |
+| React Hook Form | Form management |
+| Zod | Form validation |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+booknook-client/
+├── public/
+│   └── images/
+├── src/
+│   ├── app/
+│   │   ├── add-book/
+│   │   ├── books/
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── my-books/
+│   │   ├── my-borrows/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── not-found.tsx
+│   ├── components/
+│   │   ├── layout/
+│   │   ├── books/
+│   │   ├── shared/
+│   │   └── ui/
+│   ├── lib/
+│   └── services/
+├── .env.local
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── next.config.ts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔐 Authentication & Authorization
 
-## Deploy on Vercel
+BookNook uses Better Auth for user authentication.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Users can register and log in securely.
+- Public users can explore the library.
+- Authenticated users can add books and borrow available books.
+- Private pages require an authenticated session.
+- JWT tokens are used to authenticate requests to the backend API.
+- Book ownership determines who can edit or delete a book.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📖 Application Routes
+
+| Route | Description | Access |
+|---|---|---|
+| `/` | Home page | Public |
+| `/books` | Explore all books | Public |
+| `/books/[id]` | Book details | Authenticated |
+| `/login` | User login | Guest |
+| `/register` | User registration | Guest |
+| `/add-book` | Add a new book | Authenticated |
+| `/my-books` | Manage contributed books | Authenticated |
+| `/my-borrows` | Manage borrowed books | Authenticated |
+
+
+The backend handles:
+
+- Book management
+- Borrowing operations
+- Returning books
+- JWT verification
+- Ownership authorization
+- Database operations
+
+## 🚀 Deployment
+
+The frontend is designed to be deployed on **Vercel**.
+
+1. Push the client repository to GitHub.
+2. Sign in to Vercel.
+3. Import the BookNook client repository.
+4. Configure the production environment variables.
+5. Deploy the application.
+6. Update the Better Auth URL and backend API URL with the production domains.
+7. Configure the production authentication trusted origins and OAuth callback URLs if applicable.
+
+## 🔒 Security
+
+- Protected routes for authenticated users.
+- JWT-based backend API authentication.
+- Secure authentication using Better Auth.
+- Environment-based configuration.
+- Server-side authorization and validation through the backend API.
+
+## 🎯 Project Goal
+
+BookNook aims to make reading more accessible by creating a community-driven platform where people can share, discover, borrow, and return books.
+
+## 👨‍💻 Project Information
+
+**Project Name:** BookNook
+
+**Project Type:** Online Library Management System
+
+**Frontend:** Next.js
+
+**Backend:** Express.js
+
+**Database:** MongoDB
+
+**Authentication:** Better Auth
+
+**Developed as:** Programming Hero Assignment
+
