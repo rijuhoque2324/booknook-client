@@ -1,15 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Menu,
-  X,
-  ArrowRight,
-  LogOut,
-  User,
-} from "lucide-react";
+import { Menu, X, ArrowRight, LogOut, ChevronDown } from "lucide-react";
 
 import Logo from "@/components/shared/Logo";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -27,6 +22,7 @@ const privateLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -36,12 +32,18 @@ export default function Navbar() {
   const user = session?.user;
   const isLoggedIn = Boolean(user);
 
+  const userName = user?.name || user?.email?.split("@")[0] || "Reader";
+  const userInitial = userName.charAt(0).toUpperCase();
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setUserMenuOpen(false);
+  };
 
   const handleLogout = async () => {
     try {
@@ -49,7 +51,7 @@ export default function Navbar() {
         fetchOptions: {
           onSuccess: () => {
             closeMenu();
-            router.push("/");
+            router.replace("/");
             router.refresh();
           },
         },
@@ -69,7 +71,7 @@ export default function Navbar() {
       onClick={mobile ? closeMenu : undefined}
       aria-current={isActive(link.href) ? "page" : undefined}
       tabIndex={mobile && !menuOpen ? -1 : 0}
-      className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+      className={`cursor-pointer rounded-full px-5 py-2.5 text-sm font-semibold transition ${
         isActive(link.href)
           ? "bg-[#E9EEE8] text-[#244B3C]"
           : "text-[#737B74] hover:bg-[#E9EEE8] hover:text-[#244B3C]"
@@ -79,13 +81,79 @@ export default function Navbar() {
     </Link>
   );
 
+  
+  const renderUserMenu = (mobile = false) => (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setUserMenuOpen((prev) => !prev)}
+        className="flex w-full cursor-pointer items-center gap-2 rounded-full border border-[#E7E5DF] px-3 py-2.5 text-sm font-semibold text-[#244B3C] transition hover:bg-[#E9EEE8]"
+        aria-expanded={userMenuOpen}
+        aria-label="Open user account menu"
+      >
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#244B3C] text-sm font-bold text-white">
+          {userInitial}
+        </span>
+
+        <span className="max-w-32 truncate">{userName}</span>
+
+        <ChevronDown
+          size={16}
+          className={`transition-transform ${
+            userMenuOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {userMenuOpen && (
+        <div
+          className={`z-[60] rounded-xl border border-[#E7E5DF] bg-white p-3 shadow-xl ${
+            mobile
+              ? "relative mt-2 w-full"
+              : "absolute right-0 top-full mt-3 w-64"
+          }`}
+        >
+          {/* Clickable Profile Information */}
+          <Link
+            href="/profile"
+            onClick={closeMenu}
+            className="block cursor-pointer rounded-lg border-b border-[#E7E5DF] px-3 py-3 transition hover:bg-[#E9EEE8]"
+          >
+            <p className="truncate text-sm font-semibold text-[#244B3C]">
+              {userName}
+            </p>
+
+            <p className="mt-1 truncate text-xs text-gray-500">
+              {user?.email}
+            </p>
+
+            <p className="mt-2 text-xs font-semibold text-[#244B3C]">
+              View Profile →
+            </p>
+          </Link>
+
+          {/* Logout */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-2 flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
+
   return (
     <header className="sticky top-0 z-50 border-b border-[#E7E5DF] bg-[#FAF9F6]/95 shadow-sm backdrop-blur-md">
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
         <Logo />
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {publicLinks.map((link) => renderLink(link))}
 
           {!isPending &&
@@ -98,35 +166,19 @@ export default function Navbar() {
           {isPending ? (
             <div className="h-10 w-24 animate-pulse rounded-full bg-gray-200" />
           ) : isLoggedIn ? (
-            <>
-              <div className="flex items-center gap-2 text-sm font-medium text-[#244B3C]">
-                <User size={18} />
-                <span className="max-w-32 truncate">
-                  {user?.name || user?.email || "Reader"}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="inline-flex items-center gap-2 rounded-full border border-[#E7E5DF] px-5 py-3 text-sm font-semibold text-[#244B3C] transition hover:bg-[#E9EEE8]"
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
-            </>
+            renderUserMenu()
           ) : (
             <>
               <Link
                 href="/login"
-                className="rounded-full px-5 py-3 text-sm font-semibold text-[#244B3C] hover:bg-[#E9EEE8]"
+                className="cursor-pointer rounded-full px-5 py-3 text-sm font-semibold text-[#244B3C] hover:bg-[#E9EEE8]"
               >
                 Login
               </Link>
 
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 rounded-full bg-[#244B3C] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#19392E]"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#244B3C] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#19392E]"
               >
                 Register
                 <ArrowRight size={16} />
@@ -139,10 +191,8 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E7E5DF] text-[#244B3C] lg:hidden"
-          aria-label={
-            menuOpen ? "Close navigation menu" : "Open navigation menu"
-          }
+          className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[#E7E5DF] text-[#244B3C] lg:hidden"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
         >
@@ -167,24 +217,13 @@ export default function Navbar() {
             <div className="mt-3 h-10 animate-pulse rounded-full bg-gray-200" />
           ) : isLoggedIn ? (
             <>
+              <div className="my-2 border-t border-[#E7E5DF]" />
+
               {privateLinks.map((link) => renderLink(link, true))}
 
-              <div className="mt-3 flex items-center gap-2 border-t border-[#E7E5DF] pt-4 text-sm text-[#244B3C]">
-                <User size={18} />
-                <span className="truncate">
-                  {user?.name || user?.email || "Reader"}
-                </span>
-              </div>
+              <div className="my-2 border-t border-[#E7E5DF]" />
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                tabIndex={menuOpen ? 0 : -1}
-                className="mt-2 flex items-center justify-center gap-2 rounded-full border border-[#244B3C] py-3 text-sm font-semibold text-[#244B3C]"
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
+              {renderUserMenu(true)}
             </>
           ) : (
             <div className="mt-3 grid grid-cols-2 gap-3 border-t border-[#E7E5DF] pt-4">
@@ -192,7 +231,7 @@ export default function Navbar() {
                 href="/login"
                 onClick={closeMenu}
                 tabIndex={menuOpen ? 0 : -1}
-                className="rounded-full border border-[#244B3C] py-3 text-center text-sm font-semibold text-[#244B3C]"
+                className="cursor-pointer rounded-full border border-[#244B3C] py-3 text-center text-sm font-semibold text-[#244B3C]"
               >
                 Login
               </Link>
@@ -201,7 +240,7 @@ export default function Navbar() {
                 href="/register"
                 onClick={closeMenu}
                 tabIndex={menuOpen ? 0 : -1}
-                className="flex items-center justify-center gap-2 rounded-full bg-[#244B3C] py-3 text-sm font-semibold text-white"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#244B3C] py-3 text-sm font-semibold text-white"
               >
                 Register
                 <ArrowRight size={15} />

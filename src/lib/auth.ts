@@ -7,8 +7,22 @@ import { getDB } from "@/lib/db";
 
 const db = await getDB();
 
+// Dynamic environment configuration
+const AUTH_URL = process.env.BETTER_AUTH_URL;
+const API_URL = process.env.API_URL;
+const AUTH_SECRET = process.env.BETTER_AUTH_SECRET;
+
+if (!AUTH_URL || !API_URL || !AUTH_SECRET) {
+  throw new Error(
+    "Missing environment variables: BETTER_AUTH_URL, API_URL, or BETTER_AUTH_SECRET"
+  );
+}
+
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  // Better Auth runs on the Next.js application
+  baseURL: AUTH_URL,
+
+  secret: AUTH_SECRET,
 
   database: mongodbAdapter(db),
 
@@ -20,21 +34,32 @@ export const auth = betterAuth({
   },
 
   socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    },
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-    },
+    ...(process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {}),
+
+    ...(process.env.GITHUB_CLIENT_ID &&
+    process.env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          },
+        }
+      : {}),
   },
 
   plugins: [
     jwt({
       jwt: {
-        issuer: process.env.BETTER_AUTH_URL,
-        audience: process.env.API_URL,
+        issuer: AUTH_URL,
+        audience: API_URL,
         expirationTime: "15m",
       },
     }),

@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, BookOpen, LogIn } from "lucide-react";
@@ -18,6 +19,19 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState("");
+
+  useEffect(() => {
+    const isAuthRequired = document.cookie
+        .split("; ")
+        .some((cookie) => cookie === "auth-required=1");
+
+    if (isAuthRequired) {
+        toast.info("Please login first to access this page.");
+
+        document.cookie =
+        "auth-required=; path=/; max-age=0; SameSite=Lax";
+    }
+    }, []);
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

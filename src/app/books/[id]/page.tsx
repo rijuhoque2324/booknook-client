@@ -5,6 +5,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getBookById } from "@/lib/books-api";
+import { requireAuth } from "@/lib/auth-guard";
+import BorrowBook from "@/components/books/BorrowBook";
 
 interface BookDetailsPageProps {
   params: Promise<{
@@ -15,6 +17,9 @@ interface BookDetailsPageProps {
 async function BookDetailsContent({
   params,
 }: BookDetailsPageProps) {
+  // Only logged-in users can access book details
+  await requireAuth();
+
   const { id } = await params;
 
   let book;
@@ -42,6 +47,7 @@ async function BookDetailsContent({
       </Link>
 
       <div className="grid gap-10 md:grid-cols-2">
+        {/* Book Image */}
         <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl bg-[#E9EEE8]">
           <Image
             src={book.image}
@@ -54,6 +60,7 @@ async function BookDetailsContent({
           />
         </div>
 
+        {/* Book Information */}
         <div className="flex flex-col justify-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[#244B3C]">
             {book.category}
@@ -71,6 +78,7 @@ async function BookDetailsContent({
             {book.description}
           </p>
 
+          {/* Book Availability */}
           <div className="mt-8 space-y-4 border-t border-gray-200 pt-6">
             <div className="flex justify-between">
               <span className="text-gray-500">Total Copies</span>
@@ -90,14 +98,12 @@ async function BookDetailsContent({
             </div>
           </div>
 
-          <button
-            disabled={book.availableCopies === 0}
-            className="mt-8 rounded-lg bg-[#244B3C] px-6 py-3 font-semibold text-white transition hover:bg-[#19372B] disabled:cursor-not-allowed disabled:bg-gray-400"
-          >
-            {book.availableCopies > 0
-              ? "Borrow Book"
-              : "Currently Unavailable"}
-          </button>
+          {/* Borrow Book Form */}
+          <BorrowBook
+            bookId={book._id}
+            bookTitle={book.title}
+            availableCopies={book.availableCopies}
+          />
         </div>
       </div>
     </main>
